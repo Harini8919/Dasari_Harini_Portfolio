@@ -1,49 +1,48 @@
-// Database mapping for Harini Dasari
+// Database definition mapping exact resume information for Harini Dasari
 const PROJECTS_DATABASE = [
   {
-    id: "ai_resume_analyser",
-    title: "AI Resume Analyser",
-    tags: "#Python #Streamlit #PyTorch #NLP",
-    desc: "An intelligent resume evaluation tool that parses technical CVs, extracts core skills using NLP, and ranks job relevance with AI metrics.",
-    tech: ["Python", "Streamlit", "PyTorch", "scikit-learn"],
-    accuracy: "94.5% Matching Accuracy",
-    installation: "git clone https://github.com/Harini8919/AI-Resume-Analyser.git\ncd AI-Resume-Analyser\npip install -r requirements.txt\nstreamlit run app.py",
-    files: {
-      "app.py": `import streamlit as st\nfrom parser import extract_text, analyze_resume\n\nst.title("AI Resume Analyser")\nuploaded_file = st.file_uploader("Upload Resume (PDF)", type=["pdf"])\nif uploaded_file:\n    text = extract_text(uploaded_file)\n    score, skills = analyze_resume(text)\n    st.write(f"**Match Score:** {score}%")\n    st.write("**Extracted Skills:**", ", ".join(skills))`,
-      "parser.py": `import re\n\ndef extract_text(file):\n    return "Extracted resume content with Python, AI/ML, and SQL skills."\n\ndef analyze_resume(text):\n    skills = ["Python", "AI/ML", "SQL", "Streamlit"]\n    found = [s for s in skills if s.lower() in text.lower()]\n    score = min(100, len(found) * 25)\n    return score, found`,
-      "requirements.txt": "streamlit\ntorch\nscikit-learn\npypdf2"
-    }
-  },
-  {
     id: "spatio_temporal_air_quality",
-    title: "Spatio-Temporal Air Quality Forecasting",
-    tags: "#Python #PyTorch #DeepLearning #GIS",
-    desc: "A research model utilizing deep neural networks to forecast PM2.5 concentrations over spatio-temporal environmental data.",
-    tech: ["Python", "PyTorch", "Pandas", "Matplotlib"],
-    accuracy: "91.8% Forecast Accuracy",
-    installation: "git clone https://github.com/Harini8919/Spatio-Temporal-Air-Quality.git\npip install -r requirements.txt\npython train.py",
+    title: "Fast-Adapting Spatio-Temporal Air Quality Forecasting",
+    tags: "#PyTorch #PyTorchGeometric #DynamicGNN #BiLSTM #ONNX #RayTune",
+    desc: "Engineered a 2-stage spatio-temporal deep learning pipeline in PyTorch Geometric to forecast urban PM2.5 levels across multi-station sensor networks using non-overlapping temporal block validation. Integrated wind-advection GNN with kinetics-gated BiLSTM layers and Generalized Pareto tail loss to model directional pollution transport. Achieved >80% reduction in training overhead with high accuracy (R² > 0.90).",
+    tech: ["PyTorch", "PyTorch Geometric", "Dynamic GNN", "BiLSTM", "Ray Tune", "ONNX"],
+    accuracy: "R² > 0.90 & >80% Training Cost Reduction",
+    installation: "git clone https://github.com/Harini8919/Spatio-Temporal-Air-Quality.git\ncd Spatio-Temporal-Air-Quality\npip install -r requirements.txt\npython train.py",
     files: {
-      "train.py": `import torch\nimport pandas as pd\n\nprint("Loading air quality dataset...")\n# Spatio-temporal model training pipeline execution`,
-      "requirements.txt": "torch\npandas\nmatplotlib\nscikit-learn"
+      "model.py": `import torch\nimport torch.nn as nn\n\nclass SpatioTemporalGNN(nn.Module):\n    def __init__(self):\n        super().__init__()\n        # Kinetics-gated BiLSTM and Dynamic GNN definition\n        self.bilstm = nn.LSTM(input_size=12, hidden_size=64, batch_first=True, bidirectional=True)\n    \n    def forward(self, x):\n        out, _ = self.bilstm(x)\n        return out`,
+      "train.py": `import torch\nfrom model import SpatioTemporalGNN\n\nprint("Initializing Spatio-Temporal Deep Learning Pipeline...")\nmodel = SpatioTemporalGNN()\nprint("Executing non-overlapping temporal block validation...")`,
+      "requirements.txt": "torch\ntorch-geometric\nray-tune\nonnx\npandas\nnumpy"
     }
   },
   {
     id: "kisan_saathi",
-    title: "KisanSaathi Farmer App",
-    tags: "#Python #AgriTech #MobileApp #AI",
-    desc: "An intelligent agricultural support solution assisting farmers with real-time soil health feedback, crop suggestions, and weather alerts.",
-    tech: ["Python", "Streamlit", "NumPy", "Pandas"],
-    accuracy: "93.2% Predictive Accuracy",
-    installation: "git clone https://github.com/Harini8919/KisanSaathi.git\npip install -r requirements.txt\npython main.py",
+    title: "KisanSaathi (The Farmer's Companion)",
+    tags: "#ReactNative #TypeScript #GeminiAPI #ComputerVision #NLP",
+    desc: "Engineered a cross-platform mobile app leveraging Gemini LLM APIs and computer vision to automate crop diagnostic analytics for 5K+ users. Integrated an offline voice NLP pipeline with predictive ML models to process regional weather telemetry with 98% accuracy while reducing supply chain data tracking latency by 35%.",
+    tech: ["React Native", "TypeScript", "Gemini API", "Computer Vision", "NLP"],
+    accuracy: "98% Telemetry Accuracy (5K+ Users)",
+    installation: "git clone https://github.com/Harini8919/KisanSaathi.git\ncd KisanSaathi\nnpm install\nnpx react-native run-android",
     files: {
-      "main.py": `print("KisanSaathi Operational Suite Initialized")`,
-      "requirements.txt": "streamlit\nnumpy\npandas"
+      "App.tsx": `import React from 'react';\nimport { Text, View } from 'react-native';\n\nexport default function App() {\n  return (\n    <View>\n      <Text>KisanSaathi - Telemetry Dashboard Operational</Text>\n    </View>\n  );\n}`,
+      "package.json": "{\n  \"name\": \"kisansaathi\",\n  \"dependencies\": {\n    \"react\": \"18.2.0\",\n    \"react-native\": \"0.72.6\"\n  }\n}"
+    }
+  },
+  {
+    id: "ai_resume_analyser",
+    title: "AI Resume Analyser",
+    tags: "#Python #Streamlit #NLP #PyPDF2 #NLTK",
+    desc: "Engineered an automated ATS resume parser using Python and Streamlit to extract key candidate metadata, tech stack skills, and experience metrics. Implemented NLTK-based text processing pipelines and vector similarity scoring algorithms to match candidate profiles against target job descriptions in real-time.",
+    tech: ["Python", "Streamlit", "NLP", "PyPDF2", "NLTK"],
+    accuracy: "Real-time ATS Prescreening",
+    installation: "git clone https://github.com/Harini8919/AI-Resume-Analyser.git\ncd AI-Resume-Analyser\npip install -r requirements.txt\nstreamlit run app.py",
+    files: {
+      "app.py": `import streamlit as st\nimport PyPDF2\nimport nltk\n\nst.title("AI Resume Analyser")\nfile = st.file_uploader("Upload Candidate Resume", type=["pdf"])\nif file:\n    st.success("Resume parsed successfully!")`,
+      "requirements.txt": "streamlit\npypdf2\nnltk\nscikit-learn"
     }
   }
 ];
 
 let activeProjectId = PROJECTS_DATABASE[0].id;
-let activeFileName = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   initBootSequence();
@@ -83,7 +82,7 @@ function initBootSequence() {
 function initTypewriter() {
   const target = document.querySelector(".type-animation");
   if (!target) return;
-  const phrases = ["CSE Student", "AI/ML Enthusiast", "GenAI Certified", "Data Science Explorer"];
+  const phrases = ["Computer Science Student", "AI/ML Researcher", "GenAI Certified Professional", "NLP & Deep Learning Innovator"];
   let phraseIdx = 0;
   let charIdx = 0;
   let isDeleting = false;
@@ -110,7 +109,7 @@ function initTypewriter() {
   loop();
 }
 
-/* Canvas Particles */
+/* Background Particles */
 function initParticles() {
   const canvas = document.getElementById("particleCanvas");
   if (!canvas) return;
@@ -156,7 +155,7 @@ function initParticles() {
   });
 }
 
-/* Scroll Animations & Active Nav Fix */
+/* Scroll Reveal and Nav Tracking */
 function initScrollAnimations() {
   const revealElements = document.querySelectorAll("[data-reveal]");
   const sections = document.querySelectorAll("section");
@@ -216,7 +215,7 @@ function initScrollAnimations() {
   }
 }
 
-/* Stat Counter */
+/* Stat Counters */
 function initStatCounters() {
   const stats = document.querySelectorAll(".stat-value");
   stats.forEach((stat) => {
@@ -238,7 +237,7 @@ function initStatCounters() {
   });
 }
 
-/* Bento Cards */
+/* Render Bento Cards */
 function renderProjectCards() {
   const container = document.getElementById("curatedProjectsGrid");
   if (!container) return;
@@ -276,10 +275,10 @@ function initTelemetryMap() {
     color: "#3b82f6",
     fillColor: "#60a5fa",
     fillOpacity: 0.8
-  }).addTo(map).bindPopup("VIT-AP University Node").openPopup();
+  }).addTo(map).bindPopup("VIT Amaravati").openPopup();
 }
 
-/* SPA Repository Modal Fixes */
+/* Modal and Tab Switchers */
 function initDashboardEvents() {
   const overlay = document.getElementById("projectDashboardSpa");
   const triggerBtn = document.getElementById("triggerDashboardBtn");
@@ -288,19 +287,18 @@ function initDashboardEvents() {
 
   if (triggerBtn) triggerBtn.addEventListener("click", () => openDashboardModal(PROJECTS_DATABASE[0].id));
   if (closeBtn) closeBtn.addEventListener("click", () => overlay.classList.remove("active"));
-  
+
   if (readmeTabBtn) {
     readmeTabBtn.addEventListener("click", () => showReadmeView());
   }
 
-  // File Copy Action Fix
   const copyBtn = document.getElementById("spaCopyBtn");
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
       const code = document.getElementById("spaSourceCodeDisplay").textContent;
       navigator.clipboard.writeText(code);
       copyBtn.innerHTML = `<i class="fas fa-check"></i> Copied`;
-      setTimeout(() => copyBtn.innerHTML = `<i class="fas fa-copy"></i> Copy`, 1500);
+      setTimeout(() => copyBtn.innerHTML = `<i class="fas fa-copy"></i> Copy Code`, 1500);
     });
   }
 }
@@ -356,7 +354,6 @@ function loadFileContent(repoId, fileName) {
   const repo = PROJECTS_DATABASE.find((p) => p.id === repoId);
   if (!repo || !repo.files[fileName]) return;
 
-  activeFileName = fileName;
   document.getElementById("spaTabReadme").style.display = "none";
   document.getElementById("spaTabFile").style.display = "block";
 
@@ -368,7 +365,7 @@ function loadFileContent(repoId, fileName) {
   });
 }
 
-/* Contact Form */
+/* Form Handler */
 function initContactForm() {
   const form = document.getElementById("portfolioContactForm");
   const status = document.getElementById("formStatus");
@@ -378,7 +375,7 @@ function initContactForm() {
     e.preventDefault();
     if (status) {
       status.style.color = "#60a5fa";
-      status.textContent = "Transmitting message...";
+      status.textContent = "Transmitting message to Harini...";
       setTimeout(() => {
         status.textContent = "Message sent successfully!";
         form.reset();
