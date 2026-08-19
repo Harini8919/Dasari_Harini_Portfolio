@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inbox — Sreenivasulu Avula</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+  <script src="config.js" defer></script>
+  <style>
+    :root { --accent: #00d2ff; --primary: #0b0f19; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', sans-serif; background: #0d1117; color: #c9d1d9; min-height: 100vh; }
+    .gate { max-width: 380px; margin: 15vh auto; text-align: center; padding: 2rem; }
+    .gate h1 { font-size: 1.4rem; margin-bottom: 1.5rem; }
+    .gate input { width: 100%; padding: 0.85rem 1rem; border-radius: 8px; border: 1px solid #30363d; background: #161b22; color: white; margin-bottom: 1rem; font-size: 1rem; }
+    .gate button, .toolbar button { background: var(--accent); color: #001; border: none; padding: 0.85rem 1.5rem; border-radius: 8px; font-weight: 700; cursor: pointer; width: 100%; }
+    .gate p.err { color: #f85149; font-size: 0.9rem; min-height: 1.2em; margin-bottom: 0.5rem; }
+    .wrap { max-width: 800px; margin: 0 auto; padding: 2.5rem 1.5rem; display: none; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .toolbar h1 { font-size: 1.3rem; }
+    .toolbar button { width: auto; background: transparent; border: 1px solid #30363d; color: #c9d1d9; }
+    .msg-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; }
+    .msg-card.unread { border-left: 3px solid var(--accent); }
+    .msg-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .msg-top .who { font-weight: 700; color: white; }
+    .msg-top .when { font-size: 0.8rem; color: #8b949e; }
+    .msg-body { color: #c9d1d9; line-height: 1.6; margin-bottom: 1rem; white-space: pre-wrap; }
+    .msg-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .msg-actions a, .msg-actions button {
+      font-size: 0.85rem; padding: 0.5rem 1rem; border-radius: 20px; text-decoration: none;
+      border: 1px solid #30363d; background: transparent; color: #58a6ff; cursor: pointer; font-family: inherit;
+    }
+    .msg-actions button.mark-read:hover, .msg-actions a:hover { border-color: var(--accent); color: var(--accent); }
+    .empty-state { text-align: center; color: #8b949e; padding: 3rem 0; }
+    .setup-warning { background: #3d2c0e; border: 1px solid #7a5c1e; color: #f0c674; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <div class="gate" id="gate">
+    <h1><i class="fas fa-lock"></i> Enter passcode</h1>
+    <p class="err" id="gateErr"></p>
+    <input type="password" id="passcodeInput" placeholder="Passcode" />
+    <button id="unlockBtn">Unlock Inbox</button>
+  </div>
+
+  <div class="wrap" id="inboxWrap">
+    <div class="toolbar">
+      <h1><i class="fas fa-inbox"></i> Messages</h1>
+      <button id="lockBtn"><i class="fas fa-lock"></i> Lock</button>
+    </div>
+    <div id="firebaseWarning" class="setup-warning" style="display:none;">
+      Firebase isn't configured in <code>config.js</code> yet, so there's nothing to show here.
+      See SETUP.md — messages are currently falling back to email instead.
+    </div>
+    <div id="messageList"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const CONFIG = (typeof SITE_CONFIG !== "undefined") ? SITE_CONFIG : null;
+      const gate = document.getElementById("gate");
+      const inboxWrap = document.getElementById("inboxWrap");
+      const gateErr = document.getElementById("gateErr");
+      const messageList = document.getElementById("messageList");
+      const firebaseWarning = document.getElementById("firebaseWarning");
+
+      let db = null;
+      const firebaseReady = CONFIG && CONFIG.firebaseConfig && !CONFIG.firebaseConfig.apiKey.startsWith("REPLACE_WITH");
+
+      const unlock = () => {
+        const entered = document.getElementById("passcodeInput").value;
+        if (!CONFIG || entered !== CONFIG.adminPasscode) {
+          gateErr.textContent = "Incorrect passcode.";
+          return;
+        }
+        gate.style.display = "none";
+        inboxWrap.style.display = "block";
+        sessionStorage.setItem("inbox_unlocked", "1");
+        loadMessages();
+      };
+
+      document.getElementById("unlockBtn").addEventListener("click", unlock);
+      document.getElementById("passcodeInput").addEventListener("keydown", (e) => { if (e.key === "Enter") unlock(); });
+      document.getElementById("lockBtn").addEventListener("click", () => {
+        sessionStorage.removeItem("inbox_unlocked");
+        location.reload();
+      });
+
+      if (sessionStorage.getItem("inbox_unlocked") === "1") {
+        gate.style.display = "none";
+        inboxWrap.style.display = "block";
+        loadMessages();
+      }
+
+      function timeAgo(date) {
+        if (!date) return "";
+        const diff = (Date.now() - date.getTime()) / 1000;
+        if (diff < 60) return "just now";
+        if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+        if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+        return date.toLocaleDateString();
+      }
+
+      function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str || "";
+        return div.innerHTML;
+      }
+
+      async function loadMessages() {
+        if (!firebaseReady) {
+          firebaseWarning.style.display = "block";
+          return;
+        }
+        try {
+          if (!firebase.apps.length) firebase.initializeApp(CONFIG.firebaseConfig);
+          db = firebase.firestore();
+          const snapshot = await db.collection("messages").orderBy("createdAt", "desc").get();
+          if (snapshot.empty) {
+            messageList.innerHTML = `<div class="empty-state">No messages yet.</div>`;
+            return;
+          }
+          messageList.innerHTML = "";
+          snapshot.forEach(doc => {
+            const m = doc.data();
+            const when = m.createdAt ? m.createdAt.toDate() : null;
+            const card = document.createElement("div");
+            card.className = `msg-card ${m.status === "unread" ? "unread" : ""}`;
+            card.innerHTML = `
+              <div class="msg-top">
+                <span class="who">${escapeHtml(m.name)} ${m.email ? "· " + escapeHtml(m.email) : ""}</span>
+                <span class="when">${timeAgo(when)}</span>
+              </div>
+              <div class="msg-body">${escapeHtml(m.message)}</div>
+              <div class="msg-actions">
+                ${m.email ? `<a href="mailto:${encodeURIComponent(m.email)}?subject=${encodeURIComponent("Re: your message to Sreenivasulu")}">Reply via email</a>` : ""}
+                ${m.phone ? `<a href="tel:${encodeURIComponent(m.phone)}">Call ${escapeHtml(m.phone)}</a>` : ""}
+                <button class="mark-read" data-id="${doc.id}">${m.status === "unread" ? "Mark as read" : "Read"}</button>
+              </div>
+            `;
+            messageList.appendChild(card);
+          });
+
+          messageList.addEventListener("click", async (e) => {
+            const btn = e.target.closest(".mark-read");
+            if (!btn) return;
+            await db.collection("messages").doc(btn.dataset.id).update({ status: "read" });
+            btn.closest(".msg-card").classList.remove("unread");
+            btn.textContent = "Read";
+          });
+        } catch (err) {
+          console.error(err);
+          messageList.innerHTML = `<div class="empty-state">Couldn't load messages. Check your Firebase config and Firestore security rules.</div>`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

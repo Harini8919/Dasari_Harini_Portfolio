@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harini Dasari — Portfolio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
+
+  <script src="config.js" defer></script>
+</head>
+<body>
+
+  <!-- Boot sequence -->
+  <div class="boot-screen" id="bootScreen">
+    <div class="boot-text">
+      <span id="bootLine"></span><span class="cursor-blink">█</span>
+    </div>
+  </div>
+
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Signal rail -->
+  <div class="signal-rail" aria-hidden="true">
+    <div class="signal-rail-fill" id="signalFill"></div>
+    <div class="signal-node" data-target="home"></div>
+    <div class="signal-node" data-target="about"></div>
+    <div class="signal-node" data-target="education"></div>
+    <div class="signal-node" data-target="skills"></div>
+    <div class="signal-node" data-target="experience"></div>
+    <div class="signal-node" data-target="projects"></div>
+    <div class="signal-node" data-target="contact"></div>
+  </div>
+
+  <canvas id="particleCanvas"></canvas>
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <header>
+    <nav class="navbar">
+      <h2 class="logo">HARINI</h2>
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link" data-section="home">Home</a></li>
+        <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+        <li><a href="#education" class="nav-link" data-section="education">Education</a></li>
+        <li><a href="#skills" class="nav-link" data-section="skills">Skills</a></li>
+        <li><a href="#experience" class="nav-link" data-section="experience">Experience</a></li>
+        <li><a href="#projects" id="navProjectsLink" class="nav-link" data-section="projects">Projects</a></li>
+        <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
+      </ul>
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="content">
+
+    <!-- HOME -->
+    <section id="home" class="section hero-section">
+      <div class="hero-grid">
+        <div class="hero-text" data-reveal="left">
+          <p class="terminal-line"><span class="prompt">&gt;</span> <span class="type-animation"></span><span class="cursor-blink">|</span></p>
+          <h1>Harini<br />Dasari</h1>
+          <p class="bio">Passionate about AI/ML innovation, data analysis, and creating impactful software systems.</p>
+
+          <div class="stat-row">
+            <div class="stat-chip">
+              <span class="stat-value" data-count="7.34" data-decimals="2">0</span>
+              <span class="stat-label">CGPA</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-value" data-count="3">0</span>
+              <span class="stat-label">Shipped Projects</span>
+            </div>
+            <div class="stat-chip">
+              <span class="stat-value" data-count="2028">0</span>
+              <span class="stat-label">Graduating</span>
+            </div>
+          </div>
+
+          <div class="buttons">
+            <a href="Harini_Dasari_Resume.pdf" class="btn" id="resumeLink" target="_blank" rel="noopener">View / Download Resume <i class="fas fa-download"></i></a>
+            <a href="#contact" class="btn btn-alt">Contact Me <i class="fas fa-envelope"></i></a>
+          </div>
+        </div>
+        <div class="hero-image" id="heroImageWrap" data-reveal="right">
+          <img src="profile.jpg" alt="Harini Dasari" id="heroImg" />
+          <div class="hero-avatar-fallback">HD</div>
+          <div class="hero-ring"></div>
+        </div>
+      </div>
+      <div class="scroll-cue"><span></span>Scroll</div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section fade-in">
+      <div class="content-box about-layout">
+        <div class="about-main" data-reveal="up">
+          <span class="eyebrow">About</span>
+          <h2 class="section-title">Innovating with AI and data-driven intelligence.</h2>
+          <p>I am Harini Dasari, an aspiring Computer Science Engineer currently pursuing my B.Tech at Vellore Institute of Technology, Amaravati (VIT-AP).</p>
+          <p>My interest centers on generative AI, machine learning applications, spatio-temporal data analysis, and building intelligent web tools that address real-world challenges.</p>
+        </div>
+        <div class="about-side" data-reveal="up" data-reveal-delay="150">
+          <div class="info-card">
+            <span class="info-label">Focus Area</span>
+            <span class="info-value">Artificial Intelligence &amp; Machine Learning</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Currently</span>
+            <span class="info-value">B.Tech CSE @ VIT-AP</span>
+          </div>
+          <div class="info-card">
+            <span class="info-label">Based In</span>
+            <span class="info-value">Amaravati, Andhra Pradesh</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section id="education" class="section fade-in">
+      <div class="content-box">
+        <span class="eyebrow">Academics</span>
+        <h2 class="section-title">Education</h2>
+        <div class="timeline">
+          <div class="timeline-item" data-reveal="up">
+            <div class="timeline-year">2024 – 2028</div>
+            <div class="timeline-content">
+              <h3>Vellore Institute of Technology, Amaravati (VIT-AP)</h3>
+              <p>B.Tech in Computer Science &amp; Engineering</p>
+              <p class="cgpa">CGPA: 7.34</p>
+            </div>
+          </div>
+          <div class="timeline-item" data-reveal="up" data-reveal-delay="150">
+            <div class="timeline-year">2022 – 2024</div>
+            <div class="timeline-content">
+              <h3>Narayana Junior College</h3>
+              <p>Higher Secondary Education — Physics, Chemistry, Maths (MPC)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section fade-in">
+      <div class="content-box">
+        <span class="eyebrow">Toolkit</span>
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-categories">
+          <div class="skill-category" data-reveal="up">
+            <h4><i class="fas fa-code"></i> Programming Languages</h4>
+            <div class="skills-grid">
+              <div class="skill-tag">Python</div>
+              <div class="skill-tag">Java</div>
+              <div class="skill-tag">C</div>
+              <div class="skill-tag">JavaScript</div>
+              <div class="skill-tag">SQL</div>
+            </div>
+          </div>
+          <div class="skill-category" data-reveal="up" data-reveal-delay="100">
+            <h4><i class="fas fa-layer-group"></i> Frameworks &amp; Technologies</h4>
+            <div class="skills-grid">
+              <div class="skill-tag">PyTorch</div>
+              <div class="skill-tag">Streamlit</div>
+              <div class="skill-tag">MediaPipe</div>
+              <div class="skill-tag">Oracle GenAI</div>
+            </div>
+          </div>
+          <div class="skill-category" data-reveal="up" data-reveal-delay="200">
+            <h4><i class="fas fa-cubes"></i> Libraries</h4>
+            <div class="skills-grid">
+              <div class="skill-tag">scikit-learn</div>
+              <div class="skill-tag">NumPy</div>
+              <div class="skill-tag">Pandas</div>
+              <div class="skill-tag">Matplotlib</div>
+              <div class="skill-tag">Seaborn</div>
+            </div>
+          </div>
+          <div class="skill-category" data-reveal="up" data-reveal-delay="300">
+            <h4><i class="fas fa-toolbox"></i> Developer Tools &amp; Certifications</h4>
+            <div class="skills-grid">
+              <div class="skill-tag">Git/GitHub</div>
+              <div class="skill-tag">VS Code</div>
+              <div class="skill-tag">Jupyter Notebook</div>
+              <div class="skill-tag">Oracle GenAI Certified Professional</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="section fade-in">
+      <div class="content-box">
+        <span class="eyebrow">Work &amp; Leadership</span>
+        <h2 class="section-title">Experience</h2>
+        <div class="experience-container">
+          <div class="experience-item" data-reveal="up">
+            <div class="experience-item-top">
+              <div>
+                <h3>LinkedIn Co-Lead</h3>
+                <p class="company">VIT-AP SciPy Club</p>
+              </div>
+              <p class="duration">2024 – Present</p>
+            </div>
+            <p>Leading digital outreach and content strategy for technical events and data science initiatives.</p>
+          </div>
+          <div class="experience-item" data-reveal="up" data-reveal-delay="150">
+            <div class="experience-item-top">
+              <div>
+                <h3>Participant &amp; Innovator</h3>
+                <p class="company">e-Yantra Innovation Challenge</p>
+              </div>
+              <p class="duration">2024</p>
+            </div>
+            <p>Developed hardware-software integrations and AI models aimed at automated domain applications.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section fade-in">
+      <div class="content-box">
+        <div class="section-header-row">
+          <div>
+            <span class="eyebrow">Work I'm proud of</span>
+            <h2 class="section-title">Top Projects ✨</h2>
+          </div>
+          <button class="view-all-btn" id="triggerDashboardBtn">View Repository Dashboard <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="bento-project-grid" id="curatedProjectsGrid"></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section fade-in">
+      <div class="content-box contact-container-layout">
+        <div class="contact-form-side" data-reveal="left">
+          <span class="eyebrow">Get in touch</span>
+          <h2 class="section-title" style="text-align: left;">Let's Connect</h2>
+          <form id="portfolioContactForm" class="modern-contact-form">
+            <div class="form-group">
+              <label for="form_name">Name</label>
+              <input type="text" id="form_name" required placeholder="John Doe" />
+            </div>
+            <div class="form-group">
+              <label for="form_email">Email</label>
+              <input type="email" id="form_email" required placeholder="john@example.com" />
+            </div>
+            <div class="form-group">
+              <label for="form_phone">Mobile <span class="optional">(Optional)</span></label>
+              <input type="tel" id="form_phone" placeholder="+91 9999999999" />
+            </div>
+            <div class="form-group">
+              <label for="form_message">Message</label>
+              <textarea id="form_message" rows="4" required placeholder="Hey Harini, let's collaborate..."></textarea>
+            </div>
+            <button type="submit" class="btn submit-btn">
+              <span class="btn-label">Send Message</span> <i class="fas fa-paper-plane"></i>
+            </button>
+            <p class="form-status" id="formStatus"></p>
+          </form>
+        </div>
+
+        <div class="map-preview-side" data-reveal="right">
+          <div class="map-card" id="telemetryMapCard">
+            <div class="map-card-header">
+              <span><i class="fas fa-globe-americas"></i> Live Telemetry Node Connection</span>
+              <button id="expandMapBtn" aria-label="Expand Map"><i class="fas fa-expand-alt"></i></button>
+            </div>
+            <div id="liveTelemetryMap"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="projectDashboardSpa" class="spa-modal-overlay">
+    <div class="spa-dashboard-window">
+      <header class="spa-navbar">
+        <div class="spa-repo-identity">
+          <i class="fab fa-github font-icon"></i>
+          <span class="repo-owner" id="spaRepoOwner">Harini8919</span>
+          <span class="repo-divider">/</span>
+          <span id="spaRepoName" class="repo-current-name">AI-Resume-Analyser</span>
+          <span class="repo-badge">Public</span>
+        </div>
+        <div class="spa-navbar-controls">
+          <button id="themeToggleBtn" class="spa-ctrl-btn" title="Toggle Editor Theme"><i class="fas fa-moon"></i></button>
+          <button id="closeDashboardBtn" class="spa-ctrl-btn close-action" title="Exit Dashboard"><i class="fas fa-times"></i></button>
+        </div>
+      </header>
+
+      <div class="spa-dashboard-layout">
+        <aside class="spa-sidebar">
+          <h3>Repositories</h3>
+          <ul id="spaRepoSelectorList"></ul>
+
+          <h3 class="files-heading">Files</h3>
+          <ul id="spaFileTreeList" class="file-tree-list"></ul>
+        </aside>
+
+        <main class="spa-workspace-panel theme-dark" id="workspaceThemeContainer">
+          <div class="repo-meta-strip">
+            <div class="branch-selector">
+              <i class="fas fa-code-branch"></i> <strong>main</strong>
+            </div>
+            <button id="spaDownloadZipBtn" class="btn-git-action"><i class="fas fa-download"></i> Download ZIP</button>
+          </div>
+
+          <div class="spa-tab-bar" id="spaTabBar">
+            <button class="spa-tab active" data-tab="readme"><i class="fas fa-book-open"></i> README.md</button>
+          </div>
+
+          <div class="repo-readme-container">
+            <div class="readme-card" id="spaTabReadme">
+              <div class="readme-body-content">
+                <h1 id="spaProjectTitle" class="project-title-h1">Project Heading</h1>
+                <hr class="title-divider" />
+
+                <section class="readme-block">
+                  <h2><i class="fas fa-info-circle"></i> Description</h2>
+                  <p id="spaProjectDesc">Project description text goes here.</p>
+                </section>
+
+                <section class="readme-block">
+                  <h2><i class="fas fa-layer-group"></i> Architecture &amp; Tech Stack</h2>
+                  <div id="spaTechStackContainer" class="tech-stack-flex"></div>
+                </section>
+
+                <section class="readme-block">
+                  <h2><i class="fas fa-chart-line"></i> Performance Metrics &amp; Results</h2>
+                  <div class="metrics-display-box">
+                    <span class="accuracy-label">Target Evaluation Metrics:</span>
+                    <span id="spaAccuracyValue" class="accuracy-badge">94.2%</span>
+                  </div>
+                  <div id="spaProjectVisuals" class="visuals-gallery"></div>
+                </section>
+
+                <section class="readme-block">
+                  <h2><i class="fas fa-terminal"></i> Deployment &amp; Installation Instructions</h2>
+                  <div class="code-block-wrap">
+                    <button class="file-action-btn copy-install-btn" id="spaCopyInstallBtn" title="Copy commands"><i class="fas fa-copy"></i> Copy</button>
+                    <pre class="code-terminal-block"><code id="spaInstallationCode"># Clone repo</code></pre>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <div class="readme-card file-view-card" id="spaTabFile" style="display:none;">
+              <div class="file-view-header">
+                <i class="fas fa-file-code"></i> <span id="spaActiveFileName">file</span>
+                <span class="unsaved-dot" id="spaUnsavedDot" style="display:none;">●</span>
+                <div class="file-view-actions">
+                  <button id="spaCopyBtn" class="file-action-btn" title="Copy file contents"><i class="fas fa-copy"></i> Copy</button>
+                  <button id="spaEditBtn" class="file-action-btn" title="Edit this file"><i class="fas fa-pen"></i> Edit</button>
+                  <button id="spaSaveBtn" class="file-action-btn save" title="Save changes" style="display:none;"><i class="fas fa-check"></i> Save</button>
+                </div>
+              </div>
+              <pre class="editor-code-view" id="spaCodeViewWrap"><code id="spaSourceCodeDisplay"># Select a file from the sidebar</code></pre>
+              <textarea class="editor-code-textarea" id="spaCodeEditArea" style="display:none;" spellcheck="false"></textarea>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <div id="mapFullscreenOverlay" class="map-fullscreen-modal">
+    <button id="minimizeMapBtn"><i class="fas fa-compress-alt"></i> Exit Full Globe View</button>
+    <div id="fullscreenMapContainer"></div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-social">
+        <a href="https://github.com/Harini8919" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        <a href="https://linkedin.com/in/harini-dasari" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+        <a href="mailto:harini.dasari@example.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+      </div>
+      <p>© <span id="footerYear">2026</span> Harini Dasari. All systems operational.</p>
+    </div>
+  </footer>
+
+  <button id="backToTop" aria-label="Scroll to top">↑</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
